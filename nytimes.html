@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<!-- Latest compiled and minified CSS & JS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+	<div class="well">
+	 <div class="title"></div>
+	 <div class="byline"></div>
+	 <div class="section"></div>
+	 <div class="date"></div>
+	 <div class="web_url"></div>
+	</div>
+	 
+</div>
+
+<script>
+//TASKS
+//When user clicks search button, call a search function
+//When user clicks clear button, clear HTML fields
+//Pass off input field search term to javascript with val();
+//Pass off number of record results from <select> to javascript with val();
+//Integrate number of record results into ajax query
+//Pass off Start/End year from input field to javascript with val();
+//Loop through each article to display in HTML
+//In each loop, create HTML elements
+	
+	
+
+	var authKey = '63a09ab761534415888e1587be80782c'; //Han's API key
+	var queryURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=" + authKey + "&q=";
+	var queryTerm = "Obama";
+
+	var doSearch = function(resultsNum){
+		$.ajax({
+		url: queryURL + queryTerm,
+		method: 'GET'
+		}).done(function(data){
+			//Converts retrieved JSON object to string format
+			var dataHeadlineRaw = JSON.stringify(data.response.docs[resultsNum].headline.main);
+			//Removes the quotation marks from the string using replace() method.
+			var dataHeadline = dataHeadlineRaw.replace(/"/g, '');
+			$('.title').text('Headline: ' + dataHeadline);
+			console.log(dataHeadlineRaw);
+			console.log(dataHeadline);
+
+			var dataBylineRaw = JSON.stringify(data.response.docs[resultsNum].byline.original);
+			var dataByline = dataBylineRaw.replace(/"/g, '');
+			$('.byline').text(dataByline);
+			console.log(dataBylineRaw);
+			console.log('Byline: '+dataByline);
+
+			var dataSectionRaw = JSON.stringify(data.response.docs[resultsNum].section_name);
+			var dataSection = dataSectionRaw.replace(/"/g, '');
+			console.log('Section: ' + dataSection);
+			$('.section').text('Section: '+dataSection);
+
+			var dataDateRaw = JSON.stringify(data.response.docs[resultsNum].pub_date);
+			var dataDate = dataDateRaw.substring(0,11).replace(/"/g, '');
+			console.log(dataDate);
+			$('.date').text(dataDate);
+
+			var web_urlRaw = JSON.stringify(data.response.docs[resultsNum].web_url);
+			var web_url = web_urlRaw.replace(/"/g, '');
+			console.log('URL: '+ web_url);
+			$('.web_url').html("<a href='" + web_url + "'>" + web_url + '</a>');
+		})
+	};
+
+doSearch(5);
+
+</script>
+	
+</body>
+</html>
